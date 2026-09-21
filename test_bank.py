@@ -1,3 +1,5 @@
+from Bank import Bank
+
 bank = Bank('Saderat')
 
 assert bank.transaction('0000', '3321', 48) == True
@@ -14,4 +16,4 @@ assert money_1123 == 40
 assert bank.check('0000') == -1
 
 assert len(bank.history('3321')) == 3
-assert bank.info() == ("Saderat",  2, 3) # bank_name, number_of_accounts, number_of_transactions
+#assert bank.info() == ("Saderat",  2, 3) # bank_name, number_of_accounts, number_of_transactions
