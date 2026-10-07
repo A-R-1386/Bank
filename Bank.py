@@ -1,4 +1,5 @@
 class Bank:
+    
     def __init__(self,name):
         self.name=name
         self.tran=[]
@@ -18,7 +19,7 @@ class Bank:
             return -1
     def transaction(self,account1,account2,money):
         if account1=="0000":
-            (self.tran).append([account1,account2,money])
+            self.tran.append([account1,account2,money])
             return True
         else:
             if self.check(account1)>=money:
@@ -31,10 +32,12 @@ class Bank:
     def history(self,account):
         lst_history=[]
         for lst in self.tran:
-            for char in lst[0:2]:
-                if account==char:
-                    lst_history.append(lst)
+            if account in lst[0:2]:
+                lst_history.append(lst)
         return lst_history
+    
+    
+
     
 
 
