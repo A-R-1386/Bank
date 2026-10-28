@@ -1,4 +1,4 @@
-from Bank_3 import Bank
+from Bank import Bank
 bank = Bank('Saderat')
 
 account_number_ali = bank.signup('Ali', 20)

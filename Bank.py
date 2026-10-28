@@ -1,12 +1,11 @@
-
+import json
+from user import User
 class Bank:
-    import json
-    from user import User
     
     
     def __init__(self,name):
         self.name=name
-        self.dic={}
+        self.list_obj=[]
         self.tran=[]
         
         
@@ -16,11 +15,11 @@ class Bank:
     
 
     def signup(self,name, age):
-        from user import User
-        user = User(name, age)
+        account_number_Bank=str(self.random_number((len(name)+2)**100,(age+4)**100))
+        account_number_Bank2=account_number_Bank[len(account_number_Bank)-7:]
+        user = User(account_number_Bank2,name, age)
         print(user.name,"'s account number is :",user.account_number)
-        self.dic[user.account_number]={"name":user.name,"age":user.age}
-        
+        self.list_obj.append(user)        
         return user.account_number   
 
 
@@ -42,27 +41,27 @@ class Bank:
             return -1
         
 
-    def get_accounts(self):#output :a list of accounts ,accounts  shoud signup before
+    def get_all_accounts(self):#output :a list of accounts ,accounts  shoud signup before
         list_accounts=[]
-        for key in self.dic:
-            list_accounts+=key
+        for obj in self.list_obj:
+            list_accounts+=[obj.account_number]
         return list_accounts
             
         
 
         
         
-    def transaction(self,sender,receiver,money):
+    def transaction(self,sender,receiver,amount):
         
         
         
             if sender=="0000":
                 
-                for key in self.dic:
+                for obj in self.list_obj:
                     
-                    if receiver==key:
+                    if receiver==obj.account_number:
                 
-                        self.tran.append([sender,receiver,money])
+                        self.tran.append([sender,receiver,amount])
                         return True
                 
                 
@@ -74,12 +73,12 @@ class Bank:
             
             
             else:
-                list_accounts=self.get_accounts()
+                list_accounts_transaction=self.get_all_accounts()
                 
-                if sender and receiver in list_accounts:
+                if sender in list_accounts_transaction and receiver in list_accounts_transaction:
                     
-                        if self.balance_of(sender)>=money:
-                            (self.tran).append([sender,receiver,money])
+                        if self.balance_of(sender)>=amount:
+                            (self.tran).append([sender,receiver,amount])
                             return True
                         else:
                             return False
@@ -99,15 +98,16 @@ class Bank:
     
     
     def info(self):
-        return(self.name,len(self.dic),len(self.tran))
+        return(self.name,len(self.get_all_accounts()),len(self.tran))
+    
     def transaction_history(self):
         return self.tran
     
     
-    def get_user_by_account_number(account_number2):
-        for key in self.dic:
-            if key==account_number2:
-                return (key,key["name"],key["age"])
+    def get_user_by_account_number(account_number):
+        for obj in self.list_obj:
+            if obj.account_number==account_number:
+                return (obj.account_number,obj.name,obj.age)
                 
         
         
@@ -122,10 +122,11 @@ class Bank:
         with open(file_name_transaction,"w") as file:
             json.dump(self.tran,file)
             
-        
-            
+        dic_save={}
+        for obj in self.list_obj:
+            dic_save[obj.account_number]=[obj.name,obj.age]
         with open(file_name_accounts,"w") as file:
-            json.dump(self.dic,file)
+            json.dump(dic_save,file)
             
             
     def load(self):
@@ -136,6 +137,12 @@ class Bank:
         with open(file_name_transaction,"r") as file:
             self.tran=json.load(file)
             
-            
+        dic_load={}    
         with open(file_name_accounts,"r") as file:
-            self.dic=json.load(file)
+            dic_load=json.load(file)
+            for key in dic_load:
+                user1=User(key,dic_load[key][0],dic_load[key][1])
+                self.list_obj.append(user1)
+            
+                
+                
